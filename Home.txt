@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>MA PREMEIERE PAGE WEB</title> 
+    </head>
+    <header>
+        <nav>
+        <a href="Home.html">Home</a>
+        <a href="projets.html">Projets et tâches</a>
+        <a href="employes.html">Liste employés</a>
+        <a href="inscription.html">Inscription</a> 
+        <nav> 
+        <hr>
+        <div align="center">
+        <img src="image1.jpg" alt="Image html" height="800px" width="1150px">
+        </div>
+    </header>
+    <body>
+       <section>
+        <div align="center">
+        <p><strong> Bienvenue sur notre site ! </strong></p>
+        <p>Nous proposons une gestion des taches et projets dans votre entreprise</p>
+        <p><strong> Nos Valeurs </strong></p>
+    </div>
+    <table>
+        <tr>
+            <td>
+                <img src="image2.jpg" alt ="Image2_1" height="300" width="500">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, illum modi numquam et hic placeat, accusamus nihil quam laborum cupiditate cum in soluta dicta ut consequatur! Error amet est consequuntur?</p>
+            </td>
+            <td>
+                <img src="image2.jpg" alt ="Image2_1" height="300" width="500">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, illum modi numquam et hic placeat, accusamus nihil quam laborum cupiditate cum in soluta dicta ut consequatur! Error amet est consequuntur?</p>
+            </td>
+            <td>
+                <img src="image2.jpg" alt ="Image2_1" height="300" width="500">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, illum modi numquam et hic placeat, accusamus nihil quam laborum cupiditate cum in soluta dicta ut consequatur! Error amet est consequuntur?</p>
+            </td>
+        </tr>
+     </table>
+    </section> 
+    <footer>
+        <hr>
+        <p>Vous pouvez nous contacter par mail :<a href= "mailto:contact@exemple.com"> contact@esprit.tn</a> </p>
+        <p>Adresse : Ghazela,Tunis </p>
+    </footer>
+  </body>
+</html>
