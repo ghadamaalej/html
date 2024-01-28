@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>MA PREMEIERE PAGE WEB</title> 
+    </head>
+    <header>
+        <nav>
+        <a href="Home.html">Home</a>
+        <a href="projets.html">Projets et tâches</a>
+        <a href="employes.html">Liste employés</a>
+        <a href="inscription.html">Inscription</a> 
+        <nav> 
+        <hr>
+        <div align="center">
+        <img src="image1.jpg" alt="Image html" height="800px" width="1150px">
+        </div>
+    </header>
+    <body>
+        <section>
+            <div align="center">
+            <h2>Inscription Employé</h2> 
+            <form action="traitement_inscription.php" method="post">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" required pattern="[A-Za-z]{2,}" title="Veuillez entrer un nom valide (lettres uniquement)">
+                <br>
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" required pattern="[A-Za-z]{2,}" title="Veuillez entrer un prénom valide (lettres uniquement)">
+                <br>
+                <label for="email">Email :</label>
+                <input type="email" pattern=".+@gmail" placeholder="contact@gmail.com" id="email" name="email" required>
+                <br>
+                <label for="Telephone">Telephone :</label>
+                <input type="tel" id="Telephone" name="Telephone" required pattern="[0-9]{8}" title="Veuillez entrer un numéro de téléphone valide (8 chiffres)">
+                <br>
+                <label for="Date de naissance ">Date de naissance</label>
+                <input type="date" id="Date de naissance " name="Date de naissance" required>
+                <br>
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Le mot de passe doit contenir au moins 8 caractères, incluant au moins un chiffre, une lettre minuscule et une lettre majuscule.">
+                <br>
+                <input type="submit" value="Inscrire">
+            </form>
+        </div>
+        </section>
+        <footer>
+            <hr>
+            <p>Vous pouvez nous contacter par mail :<a href= "mailto:contact@exemple.com"> contact@esprit.tn</a> </p>
+            <p>Adresse : Ghazela,Tunis </p>
+        </footer>
+    </body>
+    </html>
+    <html>
