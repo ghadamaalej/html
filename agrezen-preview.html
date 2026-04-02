@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenRoots - Agriculture App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ======= VARIABLES ======= */
+:root{
+  --primary:#4caf50;--primary-dark:#388e3c;--primary-light:#81c784;
+  --secondary:#ff8f00;--accent:#f9a825;--dark:#1a1a2e;
+  --text:#555;--text-light:#888;--light-bg:#f5f8f0;
+  --white:#fff;--border:#e0e0e0;
+  --shadow:0 10px 40px rgba(0,0,0,.10);
+  --shadow-green:0 10px 40px rgba(76,175,80,.25);
+  --radius:14px;--tr:all .4s cubic-bezier(.25,.8,.25,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Poppins',sans-serif;color:var(--text);overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;color:var(--dark);line-height:1.2}
+a{text-decoration:none;color:inherit;transition:var(--tr)}
+ul{list-style:none}
+img{max-width:100%;display:block}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.sec{padding:96px 0}
+/* section header */
+.sec-label{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:3px;margin-bottom:14px}
+.sec-label::before,.sec-label::after{content:'';width:28px;height:2px;background:var(--primary)}
+.sec-title{font-size:clamp(28px,4vw,46px);font-weight:800;margin-bottom:16px}
+.sec-title span{color:var(--primary)}
+.sec-desc{font-size:15px;color:var(--text-light);max-width:580px;margin:0 auto;line-height:1.85}
+.sec-hdr{text-align:center;margin-bottom:58px}
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 30px;border-radius:50px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:2px solid transparent;transition:var(--tr)}
+.btn-p{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-p:hover{background:var(--primary-dark);transform:translateY(-3px);box-shadow:var(--shadow-green)}
+.btn-o{background:transparent;color:#fff;border-color:#fff}
+.btn-o:hover{background:#fff;color:var(--primary);transform:translateY(-3px)}
+/* animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(38px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeL{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeR{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:translateX(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes pulseG{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,.4)}50%{box-shadow:0 0 0 18px rgba(76,175,80,0)}}
+@keyframes countUp{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes preload{from{width:0}to{width:100%}}
+.rev{opacity:0;transform:translateY(44px);transition:opacity .7s ease,transform .7s ease}
+.rev.on{opacity:1;transform:none}
+.rev-l{opacity:0;transform:translateX(-55px);transition:opacity .7s ease,transform .7s ease}
+.rev-l.on{opacity:1;transform:none}
+.rev-r{opacity:0;transform:translateX(55px);transition:opacity .7s ease,transform .7s ease}
+.rev-r.on{opacity:1;transform:none}
+
+/* ===== PRELOADER ===== */
+#preloader{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s,visibility .6s}
+#preloader.done{opacity:0;visibility:hidden}
+.pre-logo{font-family:'Playfair Display',serif;font-size:38px;font-weight:800;color:var(--primary);margin-bottom:22px;text-align:center}
+.pre-bar{width:200px;height:3px;background:#eee;border-radius:3px;overflow:hidden;margin:0 auto}
+.pre-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));animation:preload 1.6s ease forwards}
+
+/* ===== BACK TO TOP ===== */
+#btt{position:fixed;bottom:28px;right:28px;width:48px;height:48px;background:var(--primary);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;transform:translateY(18px);transition:var(--tr);box-shadow:var(--shadow-green)}
+#btt.show{opacity:1;transform:none}
+#btt:hover{background:var(--primary-dark);transform:translateY(-3px)}
+
+/* ===== NAVBAR ===== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 0;transition:var(--tr)}
+.navbar.scr{background:#fff;padding:12px 0;box-shadow:0 2px 28px rgba(0,0,0,.09)}
+.nav-in{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#fff;transition:color .3s}
+.navbar.scr .logo{color:var(--dark)}
+.logo-ico{font-size:28px;display:inline-block;animation:sway 3.5s ease-in-out infinite}
+.logo span{color:var(--primary)}
+.nav-ul{display:flex;gap:4px;list-style:none}
+.nav-ul li a{padding:8px 16px;border-radius:25px;font-size:14px;font-weight:500;color:rgba(255,255,255,.9);cursor:pointer;transition:var(--tr)}
+.navbar.scr .nav-ul li a{color:var(--dark)}
+.nav-ul li a:hover,.nav-ul li a.act{background:var(--primary);color:#fff!important}
+.ham{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.ham span{width:26px;height:2px;background:#fff;border-radius:2px;transition:var(--tr);display:block}
+.navbar.scr .ham span{background:var(--dark)}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+@media(max-width:900px){
+  .ham{display:flex}
+  .nav-ul{position:fixed;top:0;right:-100%;width:270px;height:100vh;background:#fff;flex-direction:column;align-items:flex-start;padding:90px 28px 28px;transition:right .4s ease;box-shadow:-10px 0 40px rgba(0,0,0,.14);z-index:998}
+  .nav-ul.open{right:0}
+  .nav-ul li a{color:var(--dark)!important;padding:12px 16px;display:block;width:100%}
+  .nav-actions .btn-p{display:none}
+}
+
+/* ===== HERO ===== */
+.hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;overflow:hidden}
+.slides{position:absolute;inset:0}
+.slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.07);transition:opacity 1.1s ease,transform 7s ease}
+.slide.act{opacity:1;transform:scale(1)}
+.slide-ov{position:absolute;inset:0}
+.fl-leaf{position:absolute;font-size:70px;opacity:.13;pointer-events:none;animation:float 6s ease-in-out infinite}
+.fl1{top:14%;left:5%;animation-delay:0s;font-size:85px}
+.fl2{top:62%;right:7%;animation-delay:2s;font-size:52px}
+.fl3{bottom:20%;left:11%;animation-delay:4s;font-size:42px}
+.hero-content{position:relative;z-index:2;max-width:740px}
+.slide-txt{display:none;animation:fadeUp .85s ease forwards}
+.slide-txt.act{display:block}
+.hero-label{display:inline-flex;align-items:center;gap:8px;background:rgba(76,175,80,.18);border:1px solid rgba(76,175,80,.35);color:var(--primary-light);padding:7px 20px;border-radius:30px;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:22px;backdrop-filter:blur(10px)}
+.hero-title{font-size:clamp(38px,6vw,76px);font-weight:800;color:#fff;line-height:1.08;margin-bottom:22px;text-shadow:0 2px 18px rgba(0,0,0,.28)}
+.hero-title .hi{color:var(--primary-light)}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.85);line-height:1.85;margin-bottom:38px;max-width:540px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+/* stats bar */
+.h-stats{position:absolute;bottom:0;left:0;right:0;z-index:3}
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.95);backdrop-filter:blur(18px);border-radius:20px 20px 0 0}
+.si{display:flex;align-items:center;gap:14px;padding:20px 28px;border-right:1px solid var(--border);transition:background .3s}
+.si:last-child{border-right:none}
+.si:hover{background:var(--light-bg)}
+.si i{font-size:26px;color:var(--primary);width:32px;text-align:center}
+.si strong{display:block;font-family:'Playfair Display',serif;font-size:17px;color:var(--dark)}
+.si span{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:1px}
+/* nav arrows */
+.h-nav{position:absolute;bottom:96px;right:36px;z-index:5;display:flex;align-items:center;gap:11px}
+.nav-btn{width:42px;height:42px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:transparent;color:#fff;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.nav-btn:hover{background:var(--primary);border-color:var(--primary)}
+.dots{display:flex;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.45);cursor:pointer;transition:var(--tr)}
+.dot.act{background:var(--primary);width:26px;border-radius:5px}
+@media(max-width:768px){
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .h-nav{bottom:165px;right:18px}
+  .fl-leaf{display:none}
+}
+
+/* ===== ABOUT ===== */
+.about{background:#fff}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:78px;align-items:center}
+.about-imgs{position:relative;height:570px}
+.img-main{position:absolute;top:0;left:0;width:78%;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.img-main img{width:100%;height:410px;object-fit:cover;transition:transform .6s ease}
+.img-main:hover img{transform:scale(1.05)}
+.img-sec{position:absolute;bottom:0;right:0;width:54%;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);border:6px solid #fff}
+.img-sec img{width:100%;height:235px;object-fit:cover;transition:transform .6s ease}
+.img-sec:hover img{transform:scale(1.05)}
+.exp-badge{position:absolute;bottom:-18px;right:-18px;background:var(--primary);color:#fff;width:118px;height:118px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:var(--shadow-green);animation:pulseG 3s ease infinite}
+.exp-badge .num{font-family:'Playfair Display',serif;font-size:30px;font-weight:800;line-height:1}
+.exp-badge .lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;line-height:1.3}
+.deco-leaf{position:absolute;top:-18px;right:28px;font-size:68px;opacity:.18;animation:sway 4s ease-in-out infinite}
+.about-txt{padding-left:8px}
+.about-desc{font-size:15px;line-height:1.9;margin-bottom:15px;color:var(--text)}
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:32px 0}
+.feat{display:flex;gap:13px;align-items:flex-start;padding:18px;border-radius:var(--radius);background:var(--light-bg);border:1px solid transparent;transition:var(--tr)}
+.feat:hover{border-color:var(--primary-light);background:#fff;box-shadow:0 8px 22px rgba(76,175,80,.11);transform:translateY(-3px)}
+.feat-ic{width:44px;height:44px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0;transition:var(--tr)}
+.feat:hover .feat-ic{background:var(--secondary);transform:rotate(12deg)}
+.feat-body h4{font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px}
+.feat-body p{font-size:12px;color:var(--text-light);line-height:1.6}
+@media(max-width:992px){.about-grid{grid-template-columns:1fr;gap:55px}.about-imgs{height:390px}.img-main img{height:290px}.img-sec img{height:175px}}
+@media(max-width:576px){.feats{grid-template-columns:1fr}.about-imgs{height:310px}}
+
+/* ===== SERVICES ===== */
+.services{background:var(--light-bg);position:relative;overflow:hidden}
+.services::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 10% 20%,rgba(76,175,80,.05) 0%,transparent 50%),radial-gradient(circle at 90% 80%,rgba(139,195,74,.05) 0%,transparent 50%);pointer-events:none}
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.srv-card{background:#fff;border-radius:20px;padding:38px 28px;position:relative;overflow:hidden;transition:var(--tr);border:1px solid transparent}
+.srv-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(76,175,80,.05),transparent);border-radius:50%;transform:translate(18px,-18px);transition:var(--tr)}
+.srv-card:hover{transform:translateY(-10px);box-shadow:var(--shadow);border-color:rgba(76,175,80,.13)}
+.srv-card:hover::before{width:200px;height:200px}
+.srv-ic{width:68px;height:68px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:27px;margin-bottom:22px;transition:var(--tr)}
+.srv-card:hover .srv-ic{transform:rotateY(180deg)}
+.srv-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:13px;color:var(--dark)}
+.srv-desc{font-size:13px;color:var(--text-light);line-height:1.8;margin-bottom:18px}
+.srv-link{font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:gap .3s}
+.srv-link:hover{gap:12px}
+.card-bar{position:absolute;bottom:0;left:0;width:0;height:3px;transition:width .4s ease}
+.srv-card:hover .card-bar{width:100%}
+@media(max-width:992px){.srv-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:576px){.srv-grid{grid-template-columns:1fr}}
+
+/* ===== PRODUCTS ===== */
+.products{background:#fff}
+.filter-tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:48px}
+.f-btn{padding:10px 24px;border-radius:30px;border:2px solid var(--border);background:transparent;font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;transition:var(--tr)}
+.f-btn:hover,.f-btn.act{background:var(--primary);border-color:var(--primary);color:#fff;transform:translateY(-2px);box-shadow:0 5px 14px rgba(76,175,80,.28)}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.prod-card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--border);transition:var(--tr)}
+.prod-card:hover{transform:translateY(-8px);box-shadow:var(--shadow);border-color:transparent}
+.prod-img{position:relative;overflow:hidden;height:215px}
+.prod-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.prod-card:hover .prod-img img{transform:scale(1.1)}
+.p-badge{position:absolute;top:11px;left:11px;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.b-sale{background:#e53935;color:#fff}
+.b-new{background:#1e88e5;color:#fff}
+.b-org{background:var(--primary);color:#fff}
+.b-fresh{background:var(--secondary);color:#fff}
+.p-actions{position:absolute;top:11px;right:11px;display:flex;flex-direction:column;gap:7px;transform:translateX(56px);transition:transform .4s ease}
+.prod-card:hover .p-actions{transform:translateX(0)}
+.act-btn{width:34px;height:34px;border-radius:50%;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.1);transition:var(--tr)}
+.act-btn:hover{background:var(--primary);color:#fff;transform:scale(1.1)}
+.prod-info{padding:18px}
+.p-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--primary)}
+.p-name{font-family:'Poppins',sans-serif;font-size:15px;font-weight:600;color:var(--dark);margin:5px 0 9px}
+.p-rating{display:flex;align-items:center;gap:2px;margin-bottom:13px}
+.star{color:#ddd;font-size:14px}
+.star.on{color:var(--accent)}
+.rev-cnt{font-size:11px;color:var(--text-light);margin-left:5px}
+.p-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.p-cur{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--primary)}
+.p-old{font-size:12px;color:var(--text-light);text-decoration:line-through;margin-left:5px}
+.add-btn{padding:7px 14px;background:var(--primary);color:#fff;border:none;border-radius:20px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:var(--tr)}
+.add-btn:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 5px 13px rgba(76,175,80,.3)}
+@media(max-width:1100px){.prod-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.prod-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.prod-grid{grid-template-columns:1fr}}
+
+/* ===== COUNTER ===== */
+.counter{position:relative;padding:88px 0;background:linear-gradient(135deg,#1b4332 0%,#2d6a4f 50%,#40916c 100%);overflow:hidden}
+.counter::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.ctr-grid{display:grid;grid-template-columns:repeat(4,1fr);position:relative;z-index:1}
+.ctr-item{text-align:center;padding:28px 18px;border-right:1px solid rgba(255,255,255,.13)}
+.ctr-item:last-child{border-right:none}
+.ctr-ic{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:27px;color:var(--primary-light);margin:0 auto 18px;border:2px solid rgba(255,255,255,.14);transition:var(--tr)}
+.ctr-item:hover .ctr-ic{background:var(--primary);border-color:var(--primary);color:#fff;transform:rotateY(360deg)}
+.ctr-val{font-family:'Playfair Display',serif;font-size:clamp(34px,4vw,54px);font-weight:800;color:#fff;line-height:1;margin-bottom:8px}
+.ctr-lbl{font-size:11px;color:rgba(255,255,255,.7);font-weight:600;text-transform:uppercase;letter-spacing:2px;margin-bottom:18px}
+.ctr-line{width:38px;height:2px;background:var(--primary-light);margin:0 auto;opacity:.55}
+@media(max-width:768px){
+  .ctr-grid{grid-template-columns:repeat(2,1fr)}
+  .ctr-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.13)}
+  .ctr-item:nth-child(odd){border-right:1px solid rgba(255,255,255,.13)}
+}
+@media(max-width:480px){.ctr-grid{grid-template-columns:1fr}.ctr-item{border-right:none!important}}
+
+/* ===== TESTIMONIALS ===== */
+.testi{background:var(--light-bg);position:relative;overflow:hidden}
+.testi::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(76,175,80,.05) 0%,transparent 40%),radial-gradient(circle at 80% 20%,rgba(139,195,74,.05) 0%,transparent 40%);pointer-events:none}
+.testi-lay{display:flex;align-items:center;gap:28px}
+.testi-thumbs{flex-shrink:0}
+.thumb{width:68px;height:68px;border-radius:50%;overflow:hidden;cursor:pointer;border:3px solid transparent;transition:var(--tr);opacity:.48;transform:scale(.84)}
+.thumb:hover,.thumb.act{border-color:var(--primary);opacity:1;transform:scale(1)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.testi-main{flex:1;position:relative;min-height:330px}
+.testi-card{background:#fff;border-radius:24px;padding:48px;text-align:center;box-shadow:0 20px 56px rgba(0,0,0,.07);position:absolute;inset:0;opacity:0;transform:translateY(18px) scale(.97);transition:all .5s cubic-bezier(.25,.8,.25,1);pointer-events:none}
+.testi-card.act{opacity:1;transform:none;pointer-events:all;position:relative}
+.q-ico{font-family:'Playfair Display',serif;font-size:96px;color:var(--primary);opacity:.13;line-height:.7;margin-bottom:18px;font-weight:900}
+.testi-txt{font-size:15px;color:var(--text);line-height:1.92;font-style:italic;margin-bottom:22px;max-width:580px;margin-left:auto;margin-right:auto}
+.t-stars{color:var(--accent);font-size:19px;letter-spacing:3px;margin-bottom:22px}
+.t-author{display:flex;align-items:center;gap:13px;justify-content:center}
+.t-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid var(--primary-light)}
+.t-author strong{display:block;font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);text-align:left}
+.t-author span{font-size:12px;color:var(--primary);text-align:left;display:block}
+.t-dots{display:flex;justify-content:center;gap:7px;margin-top:28px}
+.t-arrows{display:flex;justify-content:center;gap:11px;margin-top:17px}
+.arr-btn{width:42px;height:42px;border-radius:50%;border:2px solid var(--border);background:#fff;cursor:pointer;font-size:13px;color:var(--dark);display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.arr-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+@media(max-width:768px){.testi-thumbs{display:none}.testi-card{padding:28px 22px}}
+
+/* ===== BLOG ===== */
+.blog{background:#fff}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.blog-card{background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--border);transition:var(--tr)}
+.blog-card:hover{transform:translateY(-8px);box-shadow:var(--shadow);border-color:transparent}
+.blog-img{position:relative;height:225px;overflow:hidden}
+.blog-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.blog-card:hover .blog-img img{transform:scale(1.08)}
+.b-cat{position:absolute;top:14px;left:14px;background:var(--primary);color:#fff;padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.blog-body{padding:26px}
+.b-meta{display:flex;gap:18px;font-size:11px;color:var(--text-light);margin-bottom:13px}
+.b-meta span{display:flex;align-items:center;gap:5px}
+.b-meta i{color:var(--primary)}
+.b-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--dark);margin-bottom:11px;line-height:1.4;transition:color .3s}
+.blog-card:hover .b-title{color:var(--primary)}
+.b-exc{font-size:13px;color:var(--text-light);line-height:1.75;margin-bottom:18px}
+.b-foot{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--border)}
+.b-auth{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text);font-weight:500}
+.b-auth i{font-size:18px;color:var(--primary)}
+.read-m{font-size:12px;font-weight:700;color:var(--primary);display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:gap .3s}
+.read-m:hover{gap:10px}
+@media(max-width:992px){.blog-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:576px){.blog-grid{grid-template-columns:1fr}}
+
+/* ===== NEWSLETTER ===== */
+.newsletter{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);padding:50px 0}
+.nl-in{display:flex;align-items:center;justify-content:space-between;gap:38px;flex-wrap:wrap}
+.nl-txt h3{font-family:'Playfair Display',serif;font-size:25px;color:#fff;margin-bottom:7px}
+.nl-txt p{color:rgba(255,255,255,.85);font-size:14px}
+.nl-form{display:flex;gap:0;flex:1;max-width:480px}
+.nl-form input{flex:1;padding:14px 20px;border:none;border-radius:50px 0 0 50px;font-family:'Poppins',sans-serif;font-size:14px;outline:none}
+.nl-btn{padding:14px 26px;background:var(--dark);color:#fff;border:none;border-radius:0 50px 50px 0;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:8px}
+.nl-btn:hover{background:var(--secondary)}
+
+/* ===== FOOTER ===== */
+.footer{background:#0d1f14;padding:78px 0 0;position:relative;overflow:hidden}
+.footer::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 5% 50%,rgba(76,175,80,.06) 0%,transparent 40%),radial-gradient(circle at 95% 20%,rgba(76,175,80,.04) 0%,transparent 40%);pointer-events:none}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;position:relative;z-index:1}
+.f-logo{font-family:'Playfair Display',serif;font-size:27px;font-weight:800;color:#fff;display:inline-block;margin-bottom:18px;cursor:pointer}
+.f-logo span{color:var(--primary)}
+.f-about{font-size:13px;color:rgba(255,255,255,.52);line-height:1.85;margin-bottom:22px}
+.socials{display:flex;gap:9px;margin-bottom:28px;flex-wrap:wrap}
+.soc-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.65);font-size:13px;transition:var(--tr);border:1px solid rgba(255,255,255,.09);cursor:pointer}
+.soc-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff;transform:translateY(-3px)}
+.c-info{display:flex;flex-direction:column;gap:11px}
+.c-item{display:flex;align-items:flex-start;gap:11px;font-size:13px;color:rgba(255,255,255,.52);line-height:1.5}
+.c-item i{color:var(--primary);margin-top:2px;flex-shrink:0;width:13px}
+.f-head{font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:22px;position:relative;padding-bottom:11px}
+.f-head::after{content:'';position:absolute;bottom:0;left:0;width:28px;height:2px;background:var(--primary)}
+.f-links{display:flex;flex-direction:column;gap:9px}
+.f-links li a{font-size:13px;color:rgba(255,255,255,.52);display:flex;align-items:center;gap:7px;cursor:pointer;transition:var(--tr)}
+.f-links li a i{font-size:9px;color:var(--primary);transition:transform .3s}
+.f-links li a:hover{color:var(--primary-light);padding-left:5px}
+.f-links li a:hover i{transform:translateX(3px)}
+.f-badges{display:flex;flex-direction:column;gap:9px;margin-top:22px}
+.fb{display:inline-flex;align-items:center;gap:7px;background:rgba(76,175,80,.11);border:1px solid rgba(76,175,80,.23);color:var(--primary-light);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;width:fit-content}
+.foot-bot{border-top:1px solid rgba(255,255,255,.07);margin-top:58px;padding:20px 0}
+.bot-in{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.foot-bot p{font-size:12px;color:rgba(255,255,255,.38)}
+.foot-bot strong{color:var(--primary)}
+.bot-links{display:flex;gap:18px}
+.bot-links a{font-size:12px;color:rgba(255,255,255,.38);cursor:pointer;transition:color .3s}
+.bot-links a:hover{color:var(--primary-light)}
+.pre-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.pre-gif{
+  width:120px;
+  height:auto;
+  margin-bottom:20px;
+}
+.logo-img{
+  height:45px;
+  width:auto;
+  object-fit:contain;
+}
+.why-choose {
+  position: relative;
+  min-height: 620px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Layer 0 — background image */
+.why-choose-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.why-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Layer 1 — green gradient overlay on top of image */
+.why-choose-bg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(232, 240, 208, 0.88) 0%,
+    rgba(197, 217, 138, 0.80) 20%,
+    rgba(74,  124, 47,  0.78) 55%,
+    rgba(45,  90,  26,  0.88) 80%,
+    rgba(26,  58,  13,  0.96) 100%
+  );
+}
+
+/* Layer 2 — white fade at top to blend with about section */
+.why-choose::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+  z-index: 2;
+}
+
+/* Remove old ::after soil strip */
+.why-choose::after {
+  display: none;
+}
+
+/* Soil image strip at bottom */
+.why-soil {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.why-soil-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* Optional: fade the top edge of the soil to blend smoothly */
+.why-soil::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 30px;
+  background: linear-gradient(to bottom, rgba(47, 35, 11, 0.95) 0%, transparent 100%);
+  z-index: 1;
+}
+
+/* Layer 3 — tractor wrapper */
+.why-tractor-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+}
+
+/* Tractor image */
+.why-tractor {
+  position: absolute;
+  bottom: -10px;
+  left: 51%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: 55%;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.5));
+  animation: tractorFloat 4s ease-in-out infinite;
+}
+
+@keyframes tractorFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(-10px); }
+}
+
+/* Layer 4 — content */
+.why-choose-content {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  max-width: 1200px;
+  padding: 80px 40px 160px;
+  text-align: center;
+}
+
+/* Label */
+.why-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #137026;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+
+/* Title */
+.why-title {
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 700;
+  color: #1a2e0a;
+  line-height: 1.25;
+  margin-bottom: 60px;
+}
+
+/* Points container */
+.why-points {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 280px;
+}
+
+/* Each point */
+.why-point {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.why-point.visible {
+  opacity: 1;
+  transform: translateY(0) !important;
+}
+
+/* Staggered arc positions */
+.why-point-1 { left: 11%;   bottom: 20px;  transform: translateY(30px); transition-delay: 0.1s; }
+.why-point-2 { left: 27%;  bottom: 120px;  transform: translateY(30px); transition-delay: 0.2s; }
+.why-point-3 { left: 496px;  bottom: 220px; transform: translate(-50%, 30px); transition-delay: 0.3s; }
+.why-point-4 { right: 27%;  bottom: 120px;  transform: translateY(30px); transition-delay: 0.4s; }
+.why-point-5 { right: 11%;  bottom: 20px;  transform: translateY(30px); transition-delay: 0.5s; }
+
+/* Number dot */
+.why-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #a8c832;
+  color: #1a2e0a;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 6px  rgba(168, 200, 50, 0.25),
+    0 0 0 12px rgba(168, 200, 50, 0.10);
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.why-point-1 .why-dot { animation-delay: 0.0s; }
+.why-point-2 .why-dot { animation-delay: 0.5s; }
+.why-point-3 .why-dot { animation-delay: 1.0s; }
+.why-point-4 .why-dot { animation-delay: 1.5s; }
+.why-point-5 .why-dot { animation-delay: 2.0s; }
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 6px  rgba(168, 200, 50, 0.25),
+      0 0 0 12px rgba(168, 200, 50, 0.10);
+  }
+  50% {
+    box-shadow:
+      0 0 0 10px rgba(168, 200, 50, 0.35),
+      0 0 0 20px rgba(168, 200, 50, 0.12);
+  }
+}
+
+/* Dashed line below each dot */
+.why-point::before {
+  content: '';
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 30px;
+  border-left: 1.5px dashed rgba(168, 200, 50, 0.5);
+}
+
+/* Point label */
+.why-point p {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .why-points { min-height: 500px; }
+
+  .why-point-1 { left: 2%;   bottom: 10px;  }
+  .why-point-2 { left: 5%;   bottom: 120px; }
+  .why-point-3 { left: 50%;  bottom: 200px; }
+  .why-point-4 { right: 5%;  bottom: 120px; }
+  .why-point-5 { right: 2%;  bottom: 10px;  }
+
+  .why-tractor { width: 280px; }
+  .why-title   { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  .why-choose-content { padding: 60px 20px 140px; }
+
+  .why-dot   { width: 38px; height: 38px; font-size: 11px; }
+  .why-point p { font-size: 11px; }
+}
+@media(max-width:992px){.foot-grid{grid-template-columns:1fr 1fr}.brand-c{grid-column:1/-1}}
+@media(max-width:576px){.foot-grid{grid-template-columns:1fr}.brand-c{grid-column:auto}.nl-in{flex-direction:column}.nl-form{flex-direction:column;width:100%}.nl-form input,.nl-btn{border-radius:50px;width:100%}.bot-in{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+  <div class="pre-content">
+    <img src="images/loader1.gif" alt="Loading..." class="pre-gif">
+    <div class="pre-logo">GreenRoots</div>
+  </div>
+</div>
+
+<!-- Back to top -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar" id="navbar">
+  <div class="container">
+    <nav class="nav-in">
+      <a class="logo" onclick="scrollTo2('home')">
+  <img src="images/logo.png" alt="GreenRoots Logo" class="logo-img">
+  <span>Green<span style="color:#ffffff;">Roots</span></span>
+</a>
+      <ul class="nav-ul" id="navUl">
+        <li><a onclick="scrollTo2('home')"    class="act" id="n-home">Home</a></li>
+        <li><a onclick="scrollTo2('about')"           id="n-about">About</a></li>
+        <li><a onclick="scrollTo2('services')"        id="n-services">Services</a></li>
+        <li><a onclick="scrollTo2('products')"        id="n-products">Products</a></li>
+        <li><a onclick="scrollTo2('testimonials')"    id="n-testimonials">Testimonials</a></li>
+        <li><a onclick="scrollTo2('blog')"            id="n-blog">Blog</a></li>
+      </ul>
+      <div class="nav-actions" style="display:flex;align-items:center;gap:14px">
+        <button class="btn btn-p" onclick="scrollTo2('products')"><i class="fas fa-shopping-basket"></i> Shop Now</button>
+        <button class="ham" id="ham" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="slides" id="slides">
+    <div class="slide act" style="background-image:url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&auto=format&fit=crop')">
+      <div class="slide-ov" style="background:linear-gradient(135deg,rgba(27,67,50,.82),rgba(40,100,60,.74))"></div>
+    </div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1600&auto=format&fit=crop')">
+      <div class="slide-ov" style="background:linear-gradient(135deg,rgba(20,55,40,.86),rgba(50,90,50,.78))"></div>
+    </div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600&auto=format&fit=crop')">
+      <div class="slide-ov" style="background:linear-gradient(135deg,rgba(15,50,35,.86),rgba(45,85,45,.80))"></div>
+    </div>
+  </div>
+  <div class="fl-leaf fl1">🌿</div>
+  <div class="fl-leaf fl2">🍃</div>
+  <div class="fl-leaf fl3">🌱</div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="slide-txt act" id="st0">
+        <div class="hero-label"><i class="fas fa-seedling"></i> Welcome to GreenRoots</div>
+       <h1 class="hero-title">Connect Farmers<br><span class="hi">& Buyers Directly</span></h1>
+  <p class="hero-sub">The all-in-one agricultural platform linking farmers, buyers, transporters, experts and veterinarians.</p>
+        <div class="hero-btns">
+          <button class="btn btn-p" onclick="scrollTo2('products')"><i class="fas fa-shopping-basket"></i> Explore Products</button>
+          <button class="btn btn-o" onclick="scrollTo2('about')"><i class="fas fa-play-circle"></i> Learn More</button>
+        </div>
+      </div>
+      <div class="slide-txt" id="st1">
+        <div class="hero-label"><i class="fas fa-truck"></i> Smart Logistics</div>
+  <h1 class="hero-title">Reliable &amp; Fast<br><span class="hi">Agri Delivery</span></h1>
+  <p class="hero-sub">Connect with certified transporters to deliver your agricultural products safely across Tunisia.</p>
+        <div class="hero-btns">
+          <button class="btn btn-p" onclick="scrollTo2('products')"><i class="fas fa-shopping-basket"></i> Explore Products</button>
+          <button class="btn btn-o" onclick="scrollTo2('about')"><i class="fas fa-play-circle"></i> Learn More</button>
+        </div>
+      </div>
+      <div class="slide-txt" id="st2">
+         <div class="hero-label"><i class="fas fa-graduation-cap"></i> Expert Guidance</div>
+  <h1 class="hero-title">Grow Smarter<br><span class="hi">With Our Experts</span></h1>
+  <p class="hero-sub">Access certified agricultural experts, veterinarians and training programs to boost your farm's productivity.</p>
+        <div class="hero-btns">
+          <button class="btn btn-p" onclick="scrollTo2('products')"><i class="fas fa-shopping-basket"></i> Explore Products</button>
+          <button class="btn btn-o" onclick="scrollTo2('about')"><i class="fas fa-play-circle"></i> Learn More</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-stats">
+    <div class="container">
+      <div class="stats-bar">
+        <div class="si"><i class="fas fa-seedling"></i><div><strong>10K+</strong><span>Active Farmers</span></div></div>
+      <div class="si"><i class="fas fa-handshake"></i><div><strong>50K+</strong><span>Transactions</span></div></div>
+      <div class="si"><i class="fas fa-user-md"></i><div><strong>200+</strong><span>Agri Experts</span></div></div>
+      <div class="si"><i class="fas fa-truck"></i><div><strong>Fast</strong><span>Delivery Network</span></div></div>
+    </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-nav">
+    <button class="nav-btn" onclick="heroNav(-1)"><i class="fas fa-chevron-left"></i></button>
+    <div class="dots" id="heroDots">
+      <span class="dot act" onclick="heroGo(0)"></span>
+      <span class="dot"     onclick="heroGo(1)"></span>
+      <span class="dot"     onclick="heroGo(2)"></span>
+    </div>
+    <button class="nav-btn" onclick="heroNav(1)"><i class="fas fa-chevron-right"></i></button>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about sec" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-imgs rev-l">
+        <div class="img-main">
+          <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&auto=format&fit=crop" alt="Farm">
+          <div class="exp-badge"><span class="num">25+</span><span class="lbl">Years of<br>Experience</span></div>
+        </div>
+        <div class="img-sec">
+          <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&auto=format&fit=crop" alt="Harvest">
+        </div>
+        <div class="deco-leaf">🌿</div>
+      </div>
+      <div class="about-txt rev-r">
+        <div class="sec-label"><i class="fas fa-leaf"></i> About Us</div>
+        <h2 class="sec-title">Connecting the Agricultural Ecosystem </h2>
+        <p class="about-desc">GreenRoots is a comprehensive agricultural platform built to empower every actor in the farming value chain — from smallholder farmers and buyers to transporters, veterinarians, agricultural experts, and event organizers.</p>
+        <div class="feats">
+          <div class="feat"><div class="feat-ic"><i class="fas fa-link"></i></div><div class="feat-body"><h4>Connect people</h4><p>Linking farmers, buyers, experts, transporters,event organizers,agents and vets in one shared space.</p></div></div>
+          <div class="feat"><div class="feat-ic"><i class="fas fa-book"></i></div><div class="feat-body"><h4>Share knowledge</h4><p>Giving every farmer access to expert advice, training, and real-time market data.</p></div></div>
+          <div class="feat"><div class="feat-ic"><i class="fas fa-truck-fast"></i></div><div class="feat-body"><h4>Streamline logistics</h4><p>Making transport, payments, and supply chains simple, fast, and reliable.</p></div></div>
+          <div class="feat"><div class="feat-ic"><i class="fas fa-globe"></i></div><div class="feat-body"><h4>Grow Sustainably</h4><p>Empowering every actor to farm more efficiently, profitably, and responsibly.</p></div></div>
+        </div>
+        <button class="btn btn-p"><i class="fas fa-arrow-right"></i> Discover Our Story</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why-choose">
+  <div class="why-choose-bg">
+    <img
+      src="assets/images/treee.jpg"
+      alt="Farm Background"
+      class="why-bg-img"
+    >
+  </div>
+  <div class="why-choose-bg-overlay"></div>
+  <div class="why-tractor-wrap">
+    <img src="images/tractor.png" alt="Tractor" class="why-tractor">
+  </div>
+  <div class="why-choose-content">
+    <div class="why-label">
+      <i class="fas fa-seedling"></i> Why Choose GreenRoots
+    </div>
+    <h2 class="why-title">
+      Rooted in Agriculture,<br>Growing with Smart Purpose
+    </h2>
+
+    <div class="why-points">
+      <div class="why-point why-point-1">
+        <div class="why-dot">01</div>
+        <p>Smart Farming<br>Technology</p>
+      </div>
+      <div class="why-point why-point-2">
+        <div class="why-dot">02</div>
+        <p>Connected<br>Supply Chain</p>
+      </div>
+      <div class="why-point why-point-3">
+        <div class="why-dot">03</div>
+        <p>Real-Time Market<br>Prices</p>
+      </div>
+      <div class="why-point why-point-4">
+        <div class="why-dot">04</div>
+        <p>Fields of Shared<br>Prosperity</p>
+      </div>
+      <div class="why-point why-point-5">
+        <div class="why-dot">05</div>
+        <p>Sustainable<br>Agriculture</p>
+      </div>
+    </div>
+  </div>
+  <div class="why-soil">
+    <img src="images/naturalsoil.jpg" alt="Soil" class="why-soil-img">
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services sec" id="services">
+  <div class="container">
+    <div class="sec-hdr rev">
+      <div class="sec-label"><i class="fas fa-cogs"></i> Our Services</div>
+      <h2 class="sec-title">What We <span>Offer</span> You</h2>
+      <p class="sec-desc">Bridging the gap between field and market, GreenRoots brings together everyone in agriculture — from seed to sale, all in one place.</p>
+    </div>
+    <div class="srv-grid">
+
+  <div class="srv-card rev" style="animation-delay:.0s">
+    <div class="srv-ic" style="background:#4caf5018">
+      <i class="fas fa-store" style="color:#4caf50;font-size:27px"></i>
+    </div>
+    <h3 class="srv-title">Online Marketplace</h3>
+    <p class="srv-desc">
+      Farmers can list their products and track prices in real time, connecting directly with buyers across the market.
+    </p>
+    <a class="srv-link" style="color:#4caf50">Learn More <i class="fas fa-arrow-right"></i></a>
+    <div class="card-bar" style="background:#4caf50"></div>
+  </div>
+
+  <div class="srv-card rev" style="animation-delay:.1s">
+    <div class="srv-ic" style="background:#8bc34a18">
+      <i class="fas fa-truck" style="color:#8bc34a;font-size:27px"></i>
+    </div>
+    <h3 class="srv-title">Transport Network</h3>
+    <p class="srv-desc">
+      Smart logistics connecting farmers with transporters — optimized routes, real-time tracking, and automated requests.
+    </p>
+    <a class="srv-link" style="color:#8bc34a">Learn More <i class="fas fa-arrow-right"></i></a>
+    <div class="card-bar" style="background:#8bc34a"></div>
+  </div>
+
+  <div class="srv-card rev" style="animation-delay:.2s">
+    <div class="srv-ic" style="background:#00bcd418">
+      <i class="fas fa-comments" style="color:#00bcd4;font-size:27px"></i>
+    </div>
+    <h3 class="srv-title">Expert Community</h3>
+    <p class="srv-desc">
+      Ask questions, share knowledge, and get technical advice from certified agricultural experts and specialists.
+    </p>
+    <a class="srv-link" style="color:#00bcd4">Learn More <i class="fas fa-arrow-right"></i></a>
+    <div class="card-bar" style="background:#00bcd4"></div>
+  </div>
+
+  <div class="srv-card rev" style="animation-delay:.3s">
+    <div class="srv-ic" style="background:#ff8f0018">
+      <i class="fas fa-stethoscope" style="color:#ff8f00;font-size:27px"></i>
+    </div>
+    <h3 class="srv-title">Vet Services</h3>
+    <p class="srv-desc">
+      Online veterinary consultations, animal health tracking, and scheduled farm visits for livestock care.
+    </p>
+    <a class="srv-link" style="color:#ff8f00">Learn More <i class="fas fa-arrow-right"></i></a>
+    <div class="card-bar" style="background:#ff8f00"></div>
+  </div>
+
+  <div class="srv-card rev" style="animation-delay:.4s">
+    <div class="srv-ic" style="background:#79554818">
+      <i class="fas fa-calendar-alt" style="color:#795548;font-size:27px"></i>
+    </div>
+    <h3 class="srv-title">Agri Events</h3>
+    <p class="srv-desc">
+      Discover, register, and manage agricultural training sessions, workshops, and farming events near you.
+    </p>
+    <a class="srv-link" style="color:#795548">Learn More <i class="fas fa-arrow-right"></i></a>
+    <div class="card-bar" style="background:#795548"></div>
+  </div>
+
+  <div class="srv-card rev" style="animation-delay:.5s">
+    <div class="srv-ic" style="background:#ffc10718">
+      <i class="fas fa-hand-holding-usd" style="color:#ffc107;font-size:27px"></i>
+    </div>
+    <h3 class="srv-title">Loan Management</h3>
+    <p class="srv-desc">
+      Apply for agricultural loans, track repayments, and monitor your financial history — all in one place.
+    </p>
+    <a class="srv-link" style="color:#ffc107">Learn More <i class="fas fa-arrow-right"></i></a>
+    <div class="card-bar" style="background:#ffc107"></div>
+  </div>
+
+</div>
+  </div>
+</section>
+
+<!-- ===== PRODUCTS ===== -->
+<section class="products sec" id="products">
+  <div class="container">
+    <div class="sec-hdr rev">
+      <div class="sec-label"><i class="fas fa-shopping-basket"></i> Our Products</div>
+      <h2 class="sec-title">Farm <span>Fresh</span> Products</h2>
+      <p class="sec-desc">Explore our wide selection of certified organic produce, harvested daily from our sustainable farm.</p>
+    </div>
+    <div class="filter-tabs rev" id="filterTabs">
+      <button class="f-btn act" onclick="filterProd('all',this)">All Products</button>
+      <button class="f-btn" onclick="filterProd('vegetables',this)">Vegetables</button>
+      <button class="f-btn" onclick="filterProd('fruits',this)">Fruits</button>
+      <button class="f-btn" onclick="filterProd('grains',this)">Grains</button>
+      <button class="f-btn" onclick="filterProd('herbs',this)">Herbs</button>
+    </div>
+    <div class="prod-grid" id="prodGrid"></div>
+    <div style="text-align:center;margin-top:48px">
+      <button class="btn btn-p rev"><i class="fas fa-sync-alt"></i> Load More Products</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COUNTER ===== -->
+<section class="counter" id="counter">
+  <div class="container">
+    <div class="ctr-grid">
+      <div class="ctr-item"><div class="ctr-ic"><i class="fas fa-tractor"></i></div><div class="ctr-val" data-target="350" data-suffix="+">0</div><div class="ctr-lbl">Organic Farms</div><div class="ctr-line"></div></div>
+      <div class="ctr-item"><div class="ctr-ic"><i class="fas fa-users"></i></div><div class="ctr-val" data-target="15000" data-suffix="+">0</div><div class="ctr-lbl">Happy Customers</div><div class="ctr-line"></div></div>
+      <div class="ctr-item"><div class="ctr-ic"><i class="fas fa-award"></i></div><div class="ctr-val" data-target="48" data-suffix="">0</div><div class="ctr-lbl">Awards Won</div><div class="ctr-line"></div></div>
+      <div class="ctr-item"><div class="ctr-ic"><i class="fas fa-globe-americas"></i></div><div class="ctr-val" data-target="25" data-suffix="+">0</div><div class="ctr-lbl">Countries Served</div><div class="ctr-line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testi sec" id="testimonials">
+  <div class="container">
+    <div class="sec-hdr rev">
+      <div class="sec-label"><i class="fas fa-quote-right"></i> Testimonials</div>
+      <h2 class="sec-title">What Our <span>Customers</span> Say</h2>
+      <p class="sec-desc">Real stories from real people who love our organic farm products.</p>
+    </div>
+    <div class="testi-lay" id="testiLay">
+      <div class="testi-thumbs">
+        <div class="thumb" id="thumbPrev" onclick="testiGoRel(-1)"><img id="imgPrev" src="" alt=""></div>
+      </div>
+      <div class="testi-main" id="testiMain"></div>
+      <div class="testi-thumbs">
+        <div class="thumb" id="thumbNext" onclick="testiGoRel(1)"><img id="imgNext" src="" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BLOG ===== -->
+<section class="blog sec" id="blog">
+  <div class="container">
+    <div class="sec-hdr rev">
+      <div class="sec-label"><i class="fas fa-newspaper"></i> Latest News</div>
+      <h2 class="sec-title">Farm <span>Blog</span> &amp; News</h2>
+      <p class="sec-desc">Stay updated with our latest articles on organic farming, nutrition tips, and sustainable living.</p>
+    </div>
+    <div class="blog-grid" id="blogGrid"></div>
+    <div style="text-align:center;margin-top:48px">
+      <button class="btn btn-p rev"><i class="fas fa-th-large"></i> View All Articles</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWSLETTER ===== -->
+<div class="newsletter">
+  <div class="container">
+    <div class="nl-in">
+      <div class="nl-txt"><h3>🌿 Get Fresh Updates!</h3><p>Subscribe to receive exclusive offers, farm news, and seasonal recipes.</p></div>
+      <div class="nl-form">
+        <input type="email" id="nlEmail" placeholder="Enter your email address">
+        <button class="nl-btn" onclick="nlSubmit()"><i class="fas fa-paper-plane"></i> Subscribe</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div class="brand-c">
+        <a class="f-logo" onclick="scrollTo2('home')">🌿 Agre<span>zen</span></a>
+        <p class="f-about">We are a family-owned organic farm committed to delivering the freshest, most nutritious produce straight from our fields to your family's table since 1999.</p>
+        <div class="socials">
+          <a class="soc-btn"><i class="fab fa-facebook-f"></i></a>
+          <a class="soc-btn"><i class="fab fa-twitter"></i></a>
+          <a class="soc-btn"><i class="fab fa-instagram"></i></a>
+          <a class="soc-btn"><i class="fab fa-youtube"></i></a>
+          <a class="soc-btn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <div class="c-info">
+          <div class="c-item"><i class="fas fa-map-marker-alt"></i><span>1234 Farm Road, Green Valley, CA 90210</span></div>
+          <div class="c-item"><i class="fas fa-phone-alt"></i><span>+1 (800) 123-FARM</span></div>
+          <div class="c-item"><i class="fas fa-envelope"></i><span>hello&#64;agrezen.com</span></div>
+        </div>
+      </div>
+      <div>
+        <h4 class="f-head">Company</h4>
+        <ul class="f-links">
+          <li><a><i class="fas fa-angle-right"></i> About Us</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Our Team</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Careers</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Press</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="f-head">Services</h4>
+        <ul class="f-links">
+          <li><a><i class="fas fa-angle-right"></i> Organic Farming</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Crop Cultivation</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Fresh Delivery</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Greenhouse</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Soil Analysis</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="f-head">Products</h4>
+        <ul class="f-links">
+          <li><a><i class="fas fa-angle-right"></i> Vegetables</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Fruits</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Grains &amp; Seeds</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Herbs</a></li>
+          <li><a><i class="fas fa-angle-right"></i> Dairy Products</a></li>
+        </ul>
+        <div class="f-badges">
+          <div class="fb"><i class="fas fa-leaf"></i> 100% Organic</div>
+          <div class="fb"><i class="fas fa-shield-alt"></i> Certified</div>
+          <div class="fb"><i class="fas fa-recycle"></i> Eco-Friendly</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <div class="container">
+      <div class="bot-in">
+        <p>© 2026 <strong>Agrezen</strong>. All Rights Reserved. Made with 🌿 for a greener world.</p>
+        <div class="bot-links"><a>Privacy Policy</a><a>Terms of Service</a><a>Sitemap</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===== DATA ===== */
+const PRODUCTS=[
+  {id:1,cat:'vegetables',img:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&auto=format&fit=crop',name:'Fresh Spinach',price:3.99,old:5.99,badge:'Sale',bc:'b-sale',rating:5,rev:42},
+  {id:2,cat:'fruits',img:'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&auto=format&fit=crop',name:'Organic Strawberries',price:6.99,old:null,badge:'New',bc:'b-new',rating:5,rev:38},
+  {id:3,cat:'grains',img:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&auto=format&fit=crop',name:'Whole Grain Wheat',price:4.49,old:null,badge:'Organic',bc:'b-org',rating:4,rev:27},
+  {id:4,cat:'vegetables',img:'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&auto=format&fit=crop',name:'Baby Tomatoes',price:4.99,old:7.99,badge:'Sale',bc:'b-sale',rating:5,rev:56},
+  {id:5,cat:'herbs',img:'https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&auto=format&fit=crop',name:'Fresh Basil',price:2.99,old:null,badge:'Fresh',bc:'b-fresh',rating:4,rev:19},
+  {id:6,cat:'fruits',img:'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&auto=format&fit=crop',name:'Red Apples',price:5.49,old:null,badge:'Organic',bc:'b-org',rating:5,rev:63},
+  {id:7,cat:'vegetables',img:'https://images.unsplash.com/photo-1596768083695-1a95eed3b9c5?w=400&auto=format&fit=crop',name:'Purple Eggplant',price:3.49,old:null,badge:'Fresh',bc:'b-fresh',rating:4,rev:21},
+  {id:8,cat:'grains',img:'https://images.unsplash.com/photo-1504113888839-1c8eb50233d3?w=400&auto=format&fit=crop',name:'Organic Brown Rice',price:6.99,old:8.99,badge:'Sale',bc:'b-sale',rating:5,rev:34}
+];
+
+const TESTIMONIALS=[
+  {name:'Sarah Mitchell',role:'Health & Wellness Coach',avatar:'https://randomuser.me/api/portraits/women/44.jpg',text:'Agrezen has completely transformed how I eat. Their organic vegetables are absolutely fresh and full of flavor. I can taste the difference compared to supermarket produce. My clients love the healthy meal plans I create using their produce!',rating:5},
+  {name:'James Thompson',role:'Restaurant Owner',avatar:'https://randomuser.me/api/portraits/men/32.jpg',text:"As a chef and restaurant owner, quality is everything. Agrezen delivers consistently exceptional produce that my customers rave about. Their farm-to-table approach aligns perfectly with our restaurant's philosophy. Highly recommended!",rating:5},
+  {name:'Emily Rodriguez',role:'Nutritionist',avatar:'https://randomuser.me/api/portraits/women/68.jpg',text:"I recommend Agrezen to all my clients. The nutritional value of their organic produce is significantly higher than conventionally grown alternatives. Plus, their sustainability practices are something I'm proud to support.",rating:5},
+  {name:'David Chen',role:'Fitness Trainer',avatar:'https://randomuser.me/api/portraits/men/75.jpg',text:"My athletes perform better since switching to Agrezen's produce. The quality and freshness of their organic fruits and vegetables make a real difference in recovery and energy levels. Incredible farm, incredible team!",rating:5}
+];
+
+const BLOG=[
+  {img:'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&auto=format&fit=crop',cat:'Organic Tips',date:'March 10, 2026',title:'10 Benefits of Eating Organic Food Every Day',exc:'Discover how switching to organic produce can dramatically improve your health, energy levels, and overall wellbeing.',auth:'Emma Wilson',time:'5 min read'},
+  {img:'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=600&auto=format&fit=crop',cat:'Farming',date:'March 5, 2026',title:'Sustainable Farming Practices for a Better Tomorrow',exc:'Learn about the eco-friendly techniques we use to cultivate our crops while preserving the natural ecosystem.',auth:'John Carter',time:'7 min read'},
+  {img:'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=600&auto=format&fit=crop',cat:'Nutrition',date:'Feb 28, 2026',title:'Seasonal Eating: How to Eat Fresh All Year Round',exc:'A complete guide to eating seasonal produce and maximizing nutrition with what nature offers in each season.',auth:'Sarah Brooks',time:'4 min read'}
+];
+
+/* ===== PRELOADER ===== */
+setTimeout(()=>{
+  document.getElementById('preloader').classList.add('done');
+  initReveal();
+},1800);
+
+/* ===== HERO SLIDER ===== */
+let curSlide=0;
+const totalSlides=3;
+let heroTimer=setInterval(()=>heroNav(1),5000);
+
+function heroNav(dir){
+  curSlide=(curSlide+dir+totalSlides)%totalSlides;
+  heroGo(curSlide);
+}
+function heroGo(i){
+  curSlide=i;
+  clearInterval(heroTimer);
+  heroTimer=setInterval(()=>heroNav(1),5000);
+  document.querySelectorAll('.slide').forEach((s,idx)=>s.classList.toggle('act',idx===i));
+  document.querySelectorAll('.slide-txt').forEach((s,idx)=>s.classList.toggle('act',idx===i));
+  document.querySelectorAll('#heroDots .dot').forEach((d,idx)=>d.classList.toggle('act',idx===i));
+}
+
+/* ===== NAVBAR ===== */
+const navbar=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{
+  navbar.classList.toggle('scr',scrollY>80);
+  document.getElementById('btt').classList.toggle('show',scrollY>400);
+  updateActiveNav();
+  checkReveal();
+});
+
+function updateActiveNav(){
+  const secs=['home','about','services','products','testimonials','blog'];
+  let active='home';
+  secs.forEach(id=>{const el=document.getElementById(id);if(el&&scrollY>=el.offsetTop-110)active=id;});
+  secs.forEach(id=>{const el=document.getElementById('n-'+id);if(el)el.classList.toggle('act',id===active);});
+}
+
+function toggleMenu(){
+  document.getElementById('navUl').classList.toggle('open');
+  document.getElementById('ham').classList.toggle('open');
+}
+
+function scrollTo2(id){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('navUl').classList.remove('open');
+  document.getElementById('ham').classList.remove('open');
+}
+
+/* ===== PRODUCTS ===== */
+let wishlist=[];
+function renderProducts(cat){
+  const list=cat==='all'?PRODUCTS:PRODUCTS.filter(p=>p.cat===cat);
+  const grid=document.getElementById('prodGrid');
+  grid.innerHTML=list.map((p,i)=>`
+    <div class="prod-card rev" style="animation-delay:${i*.08}s">
+      <div class="prod-img">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <span class="p-badge ${p.bc}">${p.badge}</span>
+        <div class="p-actions">
+          <button class="act-btn" onclick="toggleWish(${p.id},this)" title="Wishlist">
+            <i class="${wishlist.includes(p.id)?'fas':'far'} fa-heart" style="${wishlist.includes(p.id)?'color:#e53935':''}"></i>
+          </button>
+          <button class="act-btn" title="Quick View"><i class="far fa-eye"></i></button>
+          <button class="act-btn" title="Compare"><i class="fas fa-exchange-alt"></i></button>
+        </div>
+      </div>
+      <div class="prod-info">
+        <span class="p-cat">${p.cat}</span>
+        <h3 class="p-name">${p.name}</h3>
+        <div class="p-rating">
+          ${'★'.repeat(p.rating).split('').map(s=>`<span class="star on">${s}</span>`).join('')}
+          ${'★'.repeat(5-p.rating).split('').map(s=>`<span class="star">${s}</span>`).join('')}
+          <span class="rev-cnt">(${p.rev})</span>
+        </div>
+        <div class="p-row">
+          <div><span class="p-cur">$${p.price.toFixed(2)}</span>${p.old?`<span class="p-old">$${p.old.toFixed(2)}</span>`:''}</div>
+          <button class="add-btn" id="ab-${p.id}" onclick="addCart(${p.id},this)"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>
+      </div>
+    </div>`).join('');
+  setTimeout(checkReveal,50);
+}
+
+function filterProd(cat,btn){
+  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  renderProducts(cat);
+}
+
+function toggleWish(id,btn){
+  const idx=wishlist.indexOf(id);
+  if(idx===-1)wishlist.push(id);else wishlist.splice(idx,1);
+  const ico=btn.querySelector('i');
+  const on=wishlist.includes(id);
+  ico.className=(on?'fas':'far')+' fa-heart';
+  ico.style.color=on?'#e53935':'';
+}
+
+function addCart(id,btn){
+  btn.innerHTML='<i class="fas fa-check"></i> Added!';
+  btn.style.background='#388e3c';
+  setTimeout(()=>{btn.innerHTML='<i class="fas fa-shopping-cart"></i> Add to Cart';btn.style.background='';},1600);
+}
+
+renderProducts('all');
+
+/* ===== COUNTER ===== */
+let counterDone=false;
+function animateCounters(){
+  if(counterDone)return;counterDone=true;
+  document.querySelectorAll('.ctr-val').forEach(el=>{
+    const target=+el.dataset.target,suffix=el.dataset.suffix;
+    let cur=0;const steps=60;const inc=target/steps;let s=0;
+    const t=setInterval(()=>{
+      s++;cur=Math.min(Math.round(inc*s),target);
+      el.textContent=(cur>=1000?(cur/1000).toFixed(1)+'k':cur)+suffix;
+      if(s>=steps)clearInterval(t);
+    },2000/steps);
+  });
+}
+
+/* ===== TESTIMONIALS ===== */
+let testiIdx=0;
+function renderTesti(){
+  const main=document.getElementById('testiMain');
+  const n=TESTIMONIALS.length;
+  main.innerHTML=TESTIMONIALS.map((t,i)=>`
+    <div class="testi-card${i===testiIdx?' act':''}" id="tc-${i}">
+      <div class="q-ico">"</div>
+      <p class="testi-txt">${t.text}</p>
+      <div class="t-stars">${'★'.repeat(t.rating)}</div>
+      <div class="t-author">
+        <img class="t-avatar" src="${t.avatar}" alt="${t.name}">
+        <div><strong>${t.name}</strong><span>${t.role}</span></div>
+      </div>
+    </div>`).join('')+
+    `<div class="t-dots">${TESTIMONIALS.map((_,i)=>`<span class="dot${i===testiIdx?' act':''}" onclick="testiGo(${i})"></span>`).join('')}</div>
+     <div class="t-arrows"><button class="arr-btn" onclick="testiGoRel(-1)"><i class="fas fa-chevron-left"></i></button><button class="arr-btn" onclick="testiGoRel(1)"><i class="fas fa-chevron-right"></i></button></div>`;
+  const prev=(testiIdx-1+n)%n,next=(testiIdx+1)%n;
+  document.getElementById('imgPrev').src=TESTIMONIALS[prev].avatar;
+  document.getElementById('imgNext').src=TESTIMONIALS[next].avatar;
+  document.getElementById('thumbPrev').classList.toggle('act',false);
+  document.getElementById('thumbNext').classList.toggle('act',false);
+}
+
+function testiGo(i){testiIdx=i;renderTesti();}
+function testiGoRel(d){testiIdx=(testiIdx+d+TESTIMONIALS.length)%TESTIMONIALS.length;renderTesti();}
+renderTesti();
+setInterval(()=>testiGoRel(1),6000);
+
+/* ===== BLOG ===== */
+document.getElementById('blogGrid').innerHTML=BLOG.map((p,i)=>`
+  <article class="blog-card rev" style="animation-delay:${i*.15}s">
+    <div class="blog-img">
+      <img src="${p.img}" alt="${p.title}" loading="lazy">
+      <span class="b-cat">${p.cat}</span>
+    </div>
+    <div class="blog-body">
+      <div class="b-meta">
+        <span><i class="fas fa-calendar"></i>${p.date}</span>
+        <span><i class="fas fa-clock"></i>${p.time}</span>
+      </div>
+      <h3 class="b-title">${p.title}</h3>
+      <p class="b-exc">${p.exc}</p>
+      <div class="b-foot">
+        <div class="b-auth"><i class="fas fa-user-circle"></i><span>${p.auth}</span></div>
+        <a class="read-m">Read More <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </article>`).join('');
+
+/* ===== NEWSLETTER ===== */
+function nlSubmit(){
+  const v=document.getElementById('nlEmail').value;
+  if(v){alert('Thank you! '+v+' subscribed successfully.');document.getElementById('nlEmail').value='';}
+}
+
+/* ===== SCROLL REVEAL ===== */
+function checkReveal(){
+  document.querySelectorAll('.rev,.rev-l,.rev-r').forEach(el=>{
+    if(el.getBoundingClientRect().top<window.innerHeight-80)el.classList.add('on');
+  });
+}
+function initReveal(){checkReveal();}
+window.addEventListener('scroll',()=>{
+  checkReveal();
+  const ctr=document.getElementById('counter');
+  if(ctr&&ctr.getBoundingClientRect().top<window.innerHeight-60)animateCounters();
+});
+setTimeout(checkReveal,200);
+</script>
+</body>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const points = document.querySelectorAll('.why-point');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.2
+  });
+
+  points.forEach(p => observer.observe(p));
+
+});
+</script>
+</html>
